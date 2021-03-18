@@ -480,25 +480,25 @@ END GROUP
                 0x00800200                _edata = .
                 0x00800200                PROVIDE (__data_end, .)
 
-.bss            0x00800200        0xc
+.bss            0x00800200        0xd
                 0x00800200                PROVIDE (__bss_start, .)
  *(.bss)
  *(.bss*)
  .bss.i.2186    0x00800200        0x2 main.o
  .bss.flag_ub   0x00800202        0x1 main.o
                 0x00800202                flag_ub
- .bss.buffer    0x00800203        0x9 main.o
+ .bss.buffer    0x00800203        0xa main.o
                 0x00800203                buffer
  *(COMMON)
-                0x0080020c                PROVIDE (__bss_end, .)
+                0x0080020d                PROVIDE (__bss_end, .)
                 0x0000020a                __data_load_start = LOADADDR (.data)
                 0x0000020a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0080020c        0x0
+.noinit         0x0080020d        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
  *(.noinit*)
                 [!provide]                PROVIDE (__noinit_end, .)
-                0x0080020c                _end = .
+                0x0080020d                _end = .
                 [!provide]                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0

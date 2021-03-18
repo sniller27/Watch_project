@@ -23,7 +23,7 @@
 #define MYUBRRH F_CPU/16/BAUD-1 // half duplex
 
 // Variables for UART receive interrupt
-#define MAX 9
+#define MAX 10
 char buffer[MAX] = {0};
 volatile char data = 0;
 volatile char flag_ub = 0;
@@ -31,7 +31,7 @@ volatile char flag_ub = 0;
 // receive complete interrupt service routine (UART receive interrupt)
 ISR(USART0_RX_vect){
 	static i=0;
-	buffer[i++]=UDR3;
+	buffer[i++]=UDR0;
 	
 	if(i==MAX){
 		flag_ub=1;

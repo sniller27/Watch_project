@@ -7,7 +7,7 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, DATA
   1 .text         0000020a  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          0000000c  00800200  00800200  0000027e  2**0
+  2 .bss          0000000d  00800200  00800200  0000027e  2**0
                   ALLOC
   3 .comment      00000030  00000000  00000000  0000027e  2**0
                   CONTENTS, READONLY
@@ -183,7 +183,7 @@ Disassembly of section .text:
  116:	1d 92       	st	X+, r1
 
 00000118 <.do_clear_bss_start>:
- 118:	ac 30       	cpi	r26, 0x0C	; 12
+ 118:	ad 30       	cpi	r26, 0x0D	; 13
  11a:	b2 07       	cpc	r27, r18
  11c:	e1 f7       	brne	.-8      	; 0x116 <.do_clear_bss_loop>
  11e:	3f d0       	rcall	.+126    	; 0x19e <main>
@@ -214,7 +214,7 @@ ISR(USART0_RX_vect){
  13c:	ef 93       	push	r30
  13e:	ff 93       	push	r31
 	static i=0;
-	buffer[i++]=UDR3;
+	buffer[i++]=UDR0;
  140:	80 91 00 02 	lds	r24, 0x0200	; 0x800200 <__DATA_REGION_ORIGIN__>
  144:	90 91 01 02 	lds	r25, 0x0201	; 0x800201 <__DATA_REGION_ORIGIN__+0x1>
  148:	9c 01       	movw	r18, r24
@@ -222,14 +222,14 @@ ISR(USART0_RX_vect){
  14c:	3f 4f       	sbci	r19, 0xFF	; 255
  14e:	30 93 01 02 	sts	0x0201, r19	; 0x800201 <__DATA_REGION_ORIGIN__+0x1>
  152:	20 93 00 02 	sts	0x0200, r18	; 0x800200 <__DATA_REGION_ORIGIN__>
- 156:	40 91 36 01 	lds	r20, 0x0136	; 0x800136 <__TEXT_REGION_LENGTH__+0x7c0136>
+ 156:	40 91 c6 00 	lds	r20, 0x00C6	; 0x8000c6 <__TEXT_REGION_LENGTH__+0x7c00c6>
  15a:	fc 01       	movw	r30, r24
  15c:	ed 5f       	subi	r30, 0xFD	; 253
  15e:	fd 4f       	sbci	r31, 0xFD	; 253
  160:	40 83       	st	Z, r20
 	
 	if(i==MAX){
- 162:	29 30       	cpi	r18, 0x09	; 9
+ 162:	2a 30       	cpi	r18, 0x0A	; 10
  164:	31 05       	cpc	r19, r1
  166:	39 f4       	brne	.+14     	; 0x176 <__vector_25+0x52>
 		flag_ub=1;
