@@ -30,7 +30,7 @@ volatile char flag_ub = 0;
 
 // receive complete interrupt service routine (UART receive interrupt)
 ISR(USART0_RX_vect){
-	Static i=0;
+	static i=0;
 	buffer[i++]=UDR3;
 	
 	if(i==MAX){
