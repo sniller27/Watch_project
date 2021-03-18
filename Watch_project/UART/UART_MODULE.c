@@ -69,7 +69,7 @@ char getsUSART0(char *p, int max){
 	char cx;
 	char i = 0;
 	
-	// i<max Prevent buffer overrun
+	// 0x0D er carriage return \r (ENTER!) flytter line tilbage til starter...i<max Prevent buffer overrun
 	while(((cx = getchUSART0()) != 0x0D) && i<max){
 		putchUSART0(cx);
 		*p=cx;
