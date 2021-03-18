@@ -122,9 +122,41 @@
     </ToolchainSettings>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="data.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="I2C.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="I2C.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="main.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="ssd1306.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="ssd1306.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UART\UART_MODULE.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="UART\UART_MODULE.h">
+      <SubType>compile</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="UART" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="OledDisplay.componentinfo.xml">
+      <SubType>compile</SubType>
+    </None>
+    <None Include="OledDisplay.cproj">
+      <SubType>compile</SubType>
+    </None>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
