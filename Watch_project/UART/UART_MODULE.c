@@ -22,7 +22,7 @@ void uart0_init(unsigned int ubrr){
 	
 	// setting UCRSRn (USART Control and Status Register) (for A, B and C)
 	UCSR0A=(1<<U2X0); // Full duplex // enable full duplex (aka. double speed?) (A register)
-	UCSR0B|=(1<<RXEN0)|(1<<TXEN0);// enable receive + enable transmit + enable receive complete interrupt (B-register)
+	UCSR0B|=(1<<RXEN0)|(1<<TXEN0);// enable receive + enable transmit (B-register)
 	
 	// UCSZn s?ttes til 011. UCSZ02 er allerede 0, s? derfor s?ttes UCSZ00 og UCSZ01.
 	UCSR0C|=(1<<UCSZ00)|(1<<UCSZ01); // set frame format (C-register) (8 bits, no parity, 1 start bit, 1 stop bit)

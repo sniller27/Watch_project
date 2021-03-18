@@ -23,14 +23,26 @@
 #define MYUBRRH F_CPU/16/BAUD-1 // half duplex
 
 // Variables for UART receive interrupt
+#define MAX 9
+char buffer[MAX] = {0};
 volatile char data = 0;
-volatile char flag_r = 0;
+volatile char flag_ub = 0;
 
 // receive complete interrupt service routine (UART receive interrupt)
-// ISR(USART0_RX_vect){
-// 	data = UDR0;
-// 	flag_r=1;
-// }
+ISR(USART0_RX_vect){
+	Static i=0;
+	buffer[i++]=UDR3;
+	
+	if(i==MAX){
+		flag_ub=1;
+		i=0; 
+	}
+	
+}
+
+enableReceive_Itr(){
+	UCSR0B|=(1<<RXCIE0); // enable receive complete interrupt
+}
 
 int main(void)
 {  
@@ -45,14 +57,12 @@ int main(void)
    
    uart0_init(MYUBRRF); // UART0 init
    
-   //initRXCIntr(); // init interrupt RX interrupt (receive interrupt)
-   
-   //sei(); // enable global interrupt (prevents putchUSART0(getchUSART0()); from working)
-   
+   enableReceive_Itr(); // init interrupt RX interrupt (receive interrupt)
+   sei(); // enable global interrupt (prevents putchUSART0(getchUSART0()); from working)
    
    //char var[4];
-   int i = 0;
-   char buffer[20] = {0};
+   //int i = 0;
+   
    
   while (1)
   {  
@@ -61,23 +71,24 @@ int main(void)
 	 //sendStrXY(var,0,0);
 	 
 	 // OLD
-	 putchUSART0(getchUSART0());
+	 //putchUSART0(getchUSART0());
 	 //_delay_ms(1000);
 	 
 	 
 	 // NEW
-	// i = getsUSART0(buffer, 8);
+	 //i = getsUSART0(buffer, 8);
 	 //if(i==8)
-	 //putsUSART0(buffer); 
+	 //putsUSART0(buffer);
 	 //retransmit buffer
 	 //hh:mm:ss
 		  
 	 // NEW NEW
-// 	 if (flag_r==1)
-// 	 {
-// 		flag_r = 0;
-// 		putchUSART0(data); // transmit
-// 	 }
+	 if (flag_ub==1)
+	 {
+		flag_ub = 0;
+		//putchUSART0(data); // transmit
+		putsUSART0(buffer);//return the buffer
+	 }
 	 
 
 	 
