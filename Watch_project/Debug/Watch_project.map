@@ -574,23 +574,23 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0xef5
+.debug_info     0x00000000      0xef1
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000      0xbbc C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_info    0x00000bbc      0x1b3 main.o
- .debug_info    0x00000d6f      0x186 UART/UART_MODULE.o
+ .debug_info    0x00000bbc      0x1af main.o
+ .debug_info    0x00000d6b      0x186 UART/UART_MODULE.o
 
-.debug_abbrev   0x00000000      0xd26
+.debug_abbrev   0x00000000      0xd24
  *(.debug_abbrev)
  .debug_abbrev  0x00000000      0xb1a C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_abbrev  0x00000b1a      0x104 main.o
- .debug_abbrev  0x00000c1e      0x108 UART/UART_MODULE.o
+ .debug_abbrev  0x00000b1a      0x102 main.o
+ .debug_abbrev  0x00000c1c      0x108 UART/UART_MODULE.o
 
-.debug_line     0x00000000      0x4bc
+.debug_line     0x00000000      0x4b6
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000      0x1fa C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.6.364/gcc/dev/atmega2560/avr6/crtatmega2560.o
- .debug_line    0x000001fa      0x13a main.o
- .debug_line    0x00000334      0x188 UART/UART_MODULE.o
+ .debug_line    0x000001fa      0x134 main.o
+ .debug_line    0x0000032e      0x188 UART/UART_MODULE.o
 
 .debug_frame    0x00000000      0x100
  *(.debug_frame)

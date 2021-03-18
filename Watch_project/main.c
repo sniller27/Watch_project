@@ -30,7 +30,7 @@ volatile char flag_ub = 0;
 
 // receive complete interrupt service routine (UART receive interrupt)
 ISR(USART0_RX_vect){
-	static i=0;
+	static int i=0;
 	buffer[i++]=UDR0;
 	
 	if(i==MAX){
@@ -40,7 +40,7 @@ ISR(USART0_RX_vect){
 	
 }
 
-enableReceive_Itr(){
+void enableReceive_Itr(){
 	UCSR0B|=(1<<RXCIE0); // enable receive complete interrupt
 }
 

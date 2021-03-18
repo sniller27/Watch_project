@@ -15,19 +15,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY
   5 .debug_aranges 00000070  00000000  00000000  000002f0  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000ef5  00000000  00000000  00000360  2**0
+  6 .debug_info   00000ef1  00000000  00000000  00000360  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000d26  00000000  00000000  00001255  2**0
+  7 .debug_abbrev 00000d24  00000000  00000000  00001251  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   000004bc  00000000  00000000  00001f7b  2**0
+  8 .debug_line   000004b6  00000000  00000000  00001f75  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  00000100  00000000  00000000  00002438  2**2
+  9 .debug_frame  00000100  00000000  00000000  0000242c  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000005e7  00000000  00000000  00002538  2**0
+ 10 .debug_str    000005e7  00000000  00000000  0000252c  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000022b  00000000  00000000  00002b1f  2**0
+ 11 .debug_loc    0000022b  00000000  00000000  00002b13  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000050  00000000  00000000  00002d4a  2**0
+ 12 .debug_ranges 00000050  00000000  00000000  00002d3e  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -213,7 +213,7 @@ ISR(USART0_RX_vect){
  13a:	9f 93       	push	r25
  13c:	ef 93       	push	r30
  13e:	ff 93       	push	r31
-	static i=0;
+	static int i=0;
 	buffer[i++]=UDR0;
  140:	80 91 00 02 	lds	r24, 0x0200	; 0x800200 <__DATA_REGION_ORIGIN__>
  144:	90 91 01 02 	lds	r25, 0x0201	; 0x800201 <__DATA_REGION_ORIGIN__+0x1>
@@ -258,14 +258,13 @@ ISR(USART0_RX_vect){
 
 00000192 <enableReceive_Itr>:
 
-enableReceive_Itr(){
+void enableReceive_Itr(){
 	UCSR0B|=(1<<RXCIE0); // enable receive complete interrupt
  192:	e1 ec       	ldi	r30, 0xC1	; 193
  194:	f0 e0       	ldi	r31, 0x00	; 0
  196:	80 81       	ld	r24, Z
  198:	80 68       	ori	r24, 0x80	; 128
  19a:	80 83       	st	Z, r24
-}
  19c:	08 95       	ret
 
 0000019e <main>:
