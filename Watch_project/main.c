@@ -70,17 +70,17 @@ int main(void)
    
    //char var[4];
    //int i = 0;
+	
+   // timer variables
    char str_ss[2];
    int sec = 0;
+
    char str_m[2];
    int min = 0;
+
    char str_h[2];
    int hour = 0;
 
-   char ary[7];
-   
-   int num;
-   
    
   while (1)
   {  
@@ -104,37 +104,21 @@ int main(void)
 	 if (flag_ub==1)
 	 {
 		flag_ub = 0;
-		//putchUSART0(data); // transmit
-		
-		// if ss=60, m=60, h=24
-		
 		putsUSART0(buffer);//return the buffer (string sent to terminal)
-		
 	 }
 	 
-
 	 // wait 1s
  	 _delay_ms(1000);
 	  
-// 	 str_ss[0] = buffer[6];
-// 	 str_ss[1] = buffer[7];
-	 
 	 // GET DATA FROM BUFFER (as ascii)
  	 //sec = atoi(str_ss); // ascii to int
+	 // (buffer[7]-0x30) konverter fra char til int (via ascii-table, specifikt med hex)
 	 sec = ((buffer[7]-0x30)+((buffer[6]-0x30)*10));
 	 min = ((buffer[4]-0x30)+((buffer[3]-0x30)*10));
 	 hour = ((buffer[1]-0x30)+((buffer[0]-0x30)*10));
 	 
-	 // (buffer[7]-0x30) konverter fra char til int (via ascii-table, specifikt med hex)
-	 
 	 // MANIPULATE BUFFER-DATA (as integers)
  	 sec++;
-	  
-	
-
-//  	 sprintf(str_ss, "%i", sec);
-// 	 buffer[6] = str_ss[0];
-// 	 buffer[7] = str_ss[1];
 	 
 	 if (sec == 60)
 	 {
@@ -145,13 +129,17 @@ int main(void)
 		 {
 			 hour++;
 			 min = 0;
-		 }
-		 
-		 if (hour == 24)
-		 {
-			 sec = 0;
-			 min = 0;
-			 hour = 0;
+			 
+			 sprintf(str_h, "%i", hour);
+
+			 if (hour < 10)
+			 {
+				 buffer[0] = '0';
+				 buffer[1] = str_h[0];
+				 }else {
+				 buffer[0] = str_h[0];
+				 buffer[1] = str_h[1];
+			 }
 		 }
 		 
 		 sprintf(str_m, "%i", min);
@@ -164,78 +152,15 @@ int main(void)
 			 buffer[4] = str_m[1];
 		 }
 		 
-		 sprintf(str_h, "%i", hour);
-
-		 if (hour < 10)
+		 if (hour == 24)
 		 {
 			 buffer[0] = '0';
-			 buffer[1] = str_h[0];
-			 }else {
-			 buffer[0] = str_h[0];
-			 buffer[1] = str_h[1];
+			 buffer[1] = '0';
 		 }
 		 
-// 		 str_m[0] = buffer[3];
-// 		 str_m[1] = buffer[4];
-// 		 
-// 		 min = atoi(str_m); // ascii to int
-// 		 min++;
-// 		 
-// 		 sprintf(str_m, "%d", min);
-// 		 buffer[3] = str_m[0];
-// 		 buffer[4] = str_m[1];
-// 		 
-// 		  buffer[6] = '0';
-// 		  buffer[7] = '0';
-		  //sec = 0;
 	 }
-	 	 
-// 	 if (min == 60)
-// 	 {
-// 		 hour++;
-// 		 min = 0;
-// // 		 
-// // 		 str_h[0] = buffer[0];
-// // 		 str_h[1] = buffer[1];
-// // 		 
-// // 		 hour = atoi(str_h); // ascii to int
-// // 		 hour++;
-// // 		 
-// // 		 sprintf(str_h, "%d", hour);
-// // 		 buffer[0] = str_h[0];
-// // 		 buffer[1] = str_h[1];
-// // 		 
-// // 		 buffer[3] = '0';
-// // 		 buffer[4] = '0';
-// 		if (hour == 24){
-// 			sec = 0;
-// 			min = 0;
-// 			hour = 0;
-// 		}
-// 
-// 		sprintf(str_h, "%i", hour);
-// 
-// 		if (hour < 10)
-// 		{
-// 			buffer[0] = '0';
-// 			buffer[1] = str_h[0];
-// 			}else {
-// 			buffer[0] = str_h[0];
-// 			buffer[1] = str_h[1];
-// 		}
-// 
-// 	 }
-	 
-// 	 if (buffer[7] == '9')
-// 	 {
-// 		buffer[7] = 0;
-// 	 }else{
-// 		buffer[7]++;
-// 	 }
-// 	 
 
 	 //sprintf(ary, "%d:%d:%d",hour,min,sec);
-	 
 	 
 	 // WRITE DATA BACK TO BUFFER (as ascii)
 	 sprintf(str_ss, "%i", sec);
@@ -249,36 +174,9 @@ int main(void)
 		 buffer[7] = str_ss[1];
 	 }
 	 
-	 
-	 
-	 
-	 
-	
 	 putsUSART0(buffer);
 	 
-	 
-	 //num = buffer[7] + buffer[7];
-	 
-	 
-	 
-	 
-	 
-	 
-	 // ascii to decimal => ++
-	 // set buffer?
-	 
-	 
-	
-	 // med string	 
-	 // i main
-	 // lav string
-	 // char tidstekst[]="timer:min:sek \0";
-	 // putsUSART0(tidstekst);
-
-	 
-	 
 	 //var = getchUSART0();
-	 
 	 
 	 //sendCharXY(var,1,2);  //one char  - X is line number - from 0 -7 and Y number position of the char an the line - 15 chars 
 	 
