@@ -23,7 +23,7 @@
 #define MYUBRRH F_CPU/16/BAUD-1 // half duplex
 
 // Variables for UART receive interrupt
-#define MAX 10
+#define MAX 11
 char buffer[MAX] = {0};
 volatile char data = 0;
 volatile char flag_ub = 0;
@@ -33,7 +33,7 @@ ISR(USART0_RX_vect){
 	static int i=0;
 	buffer[i++]=UDR0;
 	
-	if(i==MAX){
+	if(i==MAX-1){
 		flag_ub=1;
 		i=0; 
 	}
@@ -47,6 +47,7 @@ void enableReceive_Itr(){
 int main(void)
 {  
 	
+  _delay_ms(3000); // to prevent "trash-text" when connecting
   
 //   I2C_Init();  //initialize i2c interface to display
 //   InitializeDisplay(); //initialize  display
@@ -57,11 +58,28 @@ int main(void)
    
    uart0_init(MYUBRRF); // UART0 init
    
+   //char message[] = "Please, enter time in the following format : \0";
+   //char message[] = "Write current time in hh:mm:ss \0 \n";
+   //putsUSART0(message);
+   //char message[] = "Please, enter time in the following format : \0";
+   char message[] = "Write current time in hh:mm:ss\n";
+   putsUSART0(message);
+   
    enableReceive_Itr(); // init interrupt RX interrupt (receive interrupt)
    sei(); // enable global interrupt (prevents putchUSART0(getchUSART0()); from working)
    
    //char var[4];
    //int i = 0;
+   char str_ss[2];
+   int sec = 0;
+   char str_m[2];
+   int min = 0;
+   char str_h[2];
+   int hour = 0;
+
+   char ary[7];
+   
+   int num;
    
    
   while (1)
@@ -87,10 +105,168 @@ int main(void)
 	 {
 		flag_ub = 0;
 		//putchUSART0(data); // transmit
-		putsUSART0(buffer);//return the buffer
+		
+		// if ss=60, m=60, h=24
+		
+		putsUSART0(buffer);//return the buffer (string sent to terminal)
+		
 	 }
 	 
 
+	 // wait 1s
+ 	 _delay_ms(1000);
+	  
+// 	 str_ss[0] = buffer[6];
+// 	 str_ss[1] = buffer[7];
+	 
+	 // GET DATA FROM BUFFER (as ascii)
+ 	 //sec = atoi(str_ss); // ascii to int
+	 sec = ((buffer[7]-0x30)+((buffer[6]-0x30)*10));
+	 min = ((buffer[4]-0x30)+((buffer[3]-0x30)*10));
+	 hour = ((buffer[1]-0x30)+((buffer[0]-0x30)*10));
+	 
+	 // (buffer[7]-0x30) konverter fra char til int (via ascii-table, specifikt med hex)
+	 
+	 // MANIPULATE BUFFER-DATA (as integers)
+ 	 sec++;
+	  
+	
+
+//  	 sprintf(str_ss, "%i", sec);
+// 	 buffer[6] = str_ss[0];
+// 	 buffer[7] = str_ss[1];
+	 
+	 if (sec == 60)
+	 {
+		 min++;
+		 sec = 0;
+		 
+		 if (min == 60)
+		 {
+			 hour++;
+			 min = 0;
+		 }
+		 
+		 if (hour == 24)
+		 {
+			 sec = 0;
+			 min = 0;
+			 hour = 0;
+		 }
+		 
+		 sprintf(str_m, "%i", min);
+		 if (min < 10)
+		 {
+			 buffer[3] = '0';
+			 buffer[4] = str_m[0];
+			 }else {
+			 buffer[3] = str_m[0];
+			 buffer[4] = str_m[1];
+		 }
+		 
+		 sprintf(str_h, "%i", hour);
+
+		 if (hour < 10)
+		 {
+			 buffer[0] = '0';
+			 buffer[1] = str_h[0];
+			 }else {
+			 buffer[0] = str_h[0];
+			 buffer[1] = str_h[1];
+		 }
+		 
+// 		 str_m[0] = buffer[3];
+// 		 str_m[1] = buffer[4];
+// 		 
+// 		 min = atoi(str_m); // ascii to int
+// 		 min++;
+// 		 
+// 		 sprintf(str_m, "%d", min);
+// 		 buffer[3] = str_m[0];
+// 		 buffer[4] = str_m[1];
+// 		 
+// 		  buffer[6] = '0';
+// 		  buffer[7] = '0';
+		  //sec = 0;
+	 }
+	 	 
+// 	 if (min == 60)
+// 	 {
+// 		 hour++;
+// 		 min = 0;
+// // 		 
+// // 		 str_h[0] = buffer[0];
+// // 		 str_h[1] = buffer[1];
+// // 		 
+// // 		 hour = atoi(str_h); // ascii to int
+// // 		 hour++;
+// // 		 
+// // 		 sprintf(str_h, "%d", hour);
+// // 		 buffer[0] = str_h[0];
+// // 		 buffer[1] = str_h[1];
+// // 		 
+// // 		 buffer[3] = '0';
+// // 		 buffer[4] = '0';
+// 		if (hour == 24){
+// 			sec = 0;
+// 			min = 0;
+// 			hour = 0;
+// 		}
+// 
+// 		sprintf(str_h, "%i", hour);
+// 
+// 		if (hour < 10)
+// 		{
+// 			buffer[0] = '0';
+// 			buffer[1] = str_h[0];
+// 			}else {
+// 			buffer[0] = str_h[0];
+// 			buffer[1] = str_h[1];
+// 		}
+// 
+// 	 }
+	 
+// 	 if (buffer[7] == '9')
+// 	 {
+// 		buffer[7] = 0;
+// 	 }else{
+// 		buffer[7]++;
+// 	 }
+// 	 
+
+	 //sprintf(ary, "%d:%d:%d",hour,min,sec);
+	 
+	 
+	 // WRITE DATA BACK TO BUFFER (as ascii)
+	 sprintf(str_ss, "%i", sec);
+	 
+	 if (sec < 10)
+	 {
+		 buffer[6] = '0';
+		 buffer[7] = str_ss[0];
+		 }else {
+		 buffer[6] = str_ss[0];
+		 buffer[7] = str_ss[1];
+	 }
+	 
+	 
+	 
+	 
+	 
+	
+	 putsUSART0(buffer);
+	 
+	 
+	 //num = buffer[7] + buffer[7];
+	 
+	 
+	 
+	 
+	 
+	 
+	 // ascii to decimal => ++
+	 // set buffer?
+	 
 	 
 	
 	 // med string	 

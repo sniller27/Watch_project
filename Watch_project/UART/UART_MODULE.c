@@ -24,12 +24,12 @@ void uart0_init(unsigned int ubrr){
 	UCSR0A=(1<<U2X0); // Full duplex // enable full duplex (aka. double speed?) (A register)
 	UCSR0B|=(1<<RXEN0)|(1<<TXEN0);// enable receive + enable transmit (B-register)
 	
-	// UCSZn s?ttes til 011. UCSZ02 er allerede 0, s? derfor s?ttes UCSZ00 og UCSZ01.
+	// UCSZn sættes til 011. UCSZ02 er allerede 0, så derfor sættes UCSZ00 og UCSZ01.
 	UCSR0C|=(1<<UCSZ00)|(1<<UCSZ01); // set frame format (C-register) (8 bits, no parity, 1 start bit, 1 stop bit)
 	
 	// setting UBRRn (USART Baud Rate Register) (16 bits where H is 8 bit high and L is 8 bit low) (skal beregnes: se tabel i datablad)
 	// datablad: s.207
-	UBRR0H =(unsigned char)(ubrr>>8); // skriver de 8 h?je bit. (skiftes da der er 16 bit i alt i UBRRn)
+	UBRR0H =(unsigned char)(ubrr>>8); // skriver de 8 høje bit. (skiftes da der er 16 bit i alt i UBRRn)
 	UBRR0L =(unsigned char)ubrr; // skriver de 8 lave bit.
 	
 }
@@ -39,13 +39,13 @@ void uart0_init(unsigned int ubrr){
 **/
 // transmit one byte/character
 void putchUSART0(char tx){
-	while(!(UCSR0A & (1<<UDRE0))); // UDREn er 0 ved transmission indtil transmit buffer er tom (venter p? at uart kan sende ny byte) (sker i UCSRnA registret)
+	while(!(UCSR0A & (1<<UDRE0))); // UDREn er 0 ved transmission indtil transmit buffer er tom (venter på at uart kan sende ny byte) (sker i UCSRnA registret)
 	UDR0 = tx; // put data into buffer and send it (skriver til UDR registret...UART I/O Data Register)
 }
 
 // receive one byte/character (skal ikke bruges i UR-projekt => skal ersttes af service routine)
  char getchUSART0(void){
-	while(!(UCSR0A & (1<<RXC0))); // RXCn er 0 ved transmission indtil der er modtaget en byte/character (vente p? at uart har modtaget en byte/character) (sker i UCSRnA registret)
+	while(!(UCSR0A & (1<<RXC0))); // RXCn er 0 ved transmission indtil der er modtaget en byte/character (vente på at uart har modtaget en byte/character) (sker i UCSRnA registret)
 	return UDR0; // get received data from buffer (modtager data fra UDR registret...UART I/O Data Register)
 }
 
