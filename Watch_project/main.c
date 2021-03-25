@@ -131,12 +131,16 @@ int main(void)
 			 min = 0;
 			 
 			 sprintf(str_h, "%i", hour);
-
-			 if (hour < 10)
+			
+			 if (hour == 24)
 			 {
+				 //reset
+				 buffer[0] = '0';
+				 buffer[1] = '0';
+			 }else if (hour < 10) {
 				 buffer[0] = '0';
 				 buffer[1] = str_h[0];
-				 }else {
+			 }else {
 				 buffer[0] = str_h[0];
 				 buffer[1] = str_h[1];
 			 }
@@ -150,12 +154,6 @@ int main(void)
 			 }else {
 			 buffer[3] = str_m[0];
 			 buffer[4] = str_m[1];
-		 }
-		 
-		 if (hour == 24)
-		 {
-			 buffer[0] = '0';
-			 buffer[1] = '0';
 		 }
 		 
 	 }
