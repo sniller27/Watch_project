@@ -29,7 +29,10 @@ char initial_time[MAX] = {0};
 volatile char data = 0;
 volatile char flag_ub = 0;
 
-bool initial_time_set = false;
+int timer1_counter = 0;
+int timer1_flag = 0;
+
+char message[] = "Write current time in hh:mm:ss\n";
 
 // reset button
 volatile unsigned char flag;
@@ -39,17 +42,6 @@ ISR(USART0_RX_vect){
 	// some existing stuff
 	static int i=0;
 	buffer[i++]=UDR0;
-	
-	// initial time (for push button etc.)
-	if (i==MAX-1)
-	{
-		initial_time_set = true;
-	}
-	
-	if (!initial_time_set)
-	{
-		initial_time[i-1]=buffer[i-1];
-	}
 	
 	// some existing stuff
 	if(i==MAX-1){
@@ -63,18 +55,36 @@ void enableReceive_Itr(){
 	UCSR0B|=(1<<RXCIE0); // enable receive complete interrupt
 }
 
-// for reset button
+// for reset button (eksternt interrupt)
 ISR(INT4_vect){
-	flag = 1;
 	
-	buffer[0] = initial_time[0];
-	buffer[1] = initial_time[1];
+	_delay_ms(30);
 	
-	buffer[3] = initial_time[3];
-	buffer[4] = initial_time[4];
+	// empties buffer
+	memset(buffer, 0, sizeof MAX);
 	
-	buffer[6] = initial_time[6];
-	buffer[7] = initial_time[7];
+	// send user-input-message
+	putsUSART0(message);
+	
+	_delay_ms(30);
+
+}
+
+void init_timer1(){
+	TCCR1B |=(1<<WGM12); // timer mode: CTC
+	TCCR1B |=(1<<CS11)|((1<<CS10)); // timer pre-scaling: 64
+	OCR1A = 249; // udregnet
+	TIMSK1 |=(1<<OCIE1A); // interrupt mode: Output Compare A Match Interrupt Enable
+}
+
+ISR(TIMER1_COMPA_vect)
+{
+	timer1_counter++;
+	if (timer1_counter == 999)
+	{
+		timer1_flag = 1;
+		timer1_counter = 0;
+	}
 }
 
 int main(void)
@@ -90,12 +100,12 @@ int main(void)
 //    clear_display();   //use this before writing you own text
    
    uart0_init(MYUBRRF); // UART0 init
+   init_timer1(); // init timer1 (alternativ måde at lave delays)
    
    //char message[] = "Please, enter time in the following format : \0";
    //char message[] = "Write current time in hh:mm:ss \0 \n";
    //putsUSART0(message);
    //char message[] = "Please, enter time in the following format : \0";
-   char message[] = "Write current time in hh:mm:ss\n";
    putsUSART0(message);
    
    enableReceive_Itr(); // init interrupt RX interrupt (receive interrupt)
@@ -160,6 +170,7 @@ int main(void)
 	 // wait 1s
  	 _delay_ms(1000);
 	  
+		 
 	 // GET DATA FROM BUFFER (as ascii)
  	 //sec = atoi(str_ss); // ascii to int
 	 // (buffer[7]-0x30) konverter fra char til int (via ascii-table, specifikt med hex)
@@ -223,6 +234,8 @@ int main(void)
 	 }
 	 
 	 putsUSART0(buffer);
+	 
+	 
 	 
 	 //var = getchUSART0();
 	 
