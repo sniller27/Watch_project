@@ -168,81 +168,86 @@ int main(void)
 	 }
 	 
 	 // wait 1s
- 	 _delay_ms(1000);
-	  
-		 
-	 // GET DATA FROM BUFFER (as ascii)
- 	 //sec = atoi(str_ss); // ascii to int
-	 // (buffer[7]-0x30) konverter fra char til int (via ascii-table, specifikt med hex)
-	 sec = ((buffer[7]-0x30)+((buffer[6]-0x30)*10));
-	 min = ((buffer[4]-0x30)+((buffer[3]-0x30)*10));
-	 hour = ((buffer[1]-0x30)+((buffer[0]-0x30)*10));
-	 
-	 // MANIPULATE BUFFER-DATA (as integers)
- 	 sec++;
-	 
-	 if (sec == 60)
-	 {
-		 min++;
-		 sec = 0;
-		 
-		 if (min == 60)
-		 {
-			 hour++;
-			 min = 0;
-			 
-			 sprintf(str_h, "%i", hour);
+ 	 //_delay_ms(1000);
+ 	 if (timer1_flag == 1)
+ 	 {
+		// GET DATA FROM BUFFER (as ascii)
+		//sec = atoi(str_ss); // ascii to int
+		// (buffer[7]-0x30) konverter fra char til int (via ascii-table, specifikt med hex)
+		sec = ((buffer[7]-0x30)+((buffer[6]-0x30)*10));
+		min = ((buffer[4]-0x30)+((buffer[3]-0x30)*10));
+		hour = ((buffer[1]-0x30)+((buffer[0]-0x30)*10));
+		
+		// MANIPULATE BUFFER-DATA (as integers)
+		sec++;
+		
+		if (sec == 60)
+		{
+			min++;
+			sec = 0;
 			
-			 if (hour == 24)
-			 {
-				 //reset
-				 buffer[0] = '0';
-				 buffer[1] = '0';
-			 }else if (hour < 10) {
-				 buffer[0] = '0';
-				 buffer[1] = str_h[0];
-			 }else {
-				 buffer[0] = str_h[0];
-				 buffer[1] = str_h[1];
-			 }
-		 }
-		 
-		 sprintf(str_m, "%i", min);
-		 if (min < 10)
-		 {
-			 buffer[3] = '0';
-			 buffer[4] = str_m[0];
-			 }else {
-			 buffer[3] = str_m[0];
-			 buffer[4] = str_m[1];
-		 }
-		 
-	 }
+			if (min == 60)
+			{
+				hour++;
+				min = 0;
+				
+				sprintf(str_h, "%i", hour);
+				
+				if (hour == 24)
+				{
+					//reset
+					buffer[0] = '0';
+					buffer[1] = '0';
+					}else if (hour < 10) {
+					buffer[0] = '0';
+					buffer[1] = str_h[0];
+					}else {
+					buffer[0] = str_h[0];
+					buffer[1] = str_h[1];
+				}
+			}
+			
+			sprintf(str_m, "%i", min);
+			if (min < 10)
+			{
+				buffer[3] = '0';
+				buffer[4] = str_m[0];
+				}else {
+				buffer[3] = str_m[0];
+				buffer[4] = str_m[1];
+			}
+			
+		}
 
-	 //sprintf(ary, "%d:%d:%d",hour,min,sec);
-	 
-	 // WRITE DATA BACK TO BUFFER (as ascii)
-	 sprintf(str_ss, "%i", sec);
-	 
-	 if (sec < 10)
-	 {
-		 buffer[6] = '0';
-		 buffer[7] = str_ss[0];
-		 }else {
-		 buffer[6] = str_ss[0];
-		 buffer[7] = str_ss[1];
-	 }
-	 
-	 putsUSART0(buffer);
-	 
-	 
-	 
-	 //var = getchUSART0();
-	 
-	 //sendCharXY(var,1,2);  //one char  - X is line number - from 0 -7 and Y number position of the char an the line - 15 chars 
-	 
-	 //sendStrXY(text,0,0); //line 0  -print the line of text
+		//sprintf(ary, "%d:%d:%d",hour,min,sec);
+		
+		// WRITE DATA BACK TO BUFFER (as ascii)
+		sprintf(str_ss, "%i", sec);
+		
+		if (sec < 10)
+		{
+			buffer[6] = '0';
+			buffer[7] = str_ss[0];
+			}else {
+			buffer[6] = str_ss[0];
+			buffer[7] = str_ss[1];
+		}
+		
+		putsUSART0(buffer);
+		
+		
+		
+		//var = getchUSART0();
+		
+		//sendCharXY(var,1,2);  //one char  - X is line number - from 0 -7 and Y number position of the char an the line - 15 chars
+		
+		//sendStrXY(text,0,0); //line 0  -print the line of text
+		
+		timer1_flag = 0;
+ 	 }
 	  
+		 
+	 
   }
   
 
