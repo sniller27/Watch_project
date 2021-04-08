@@ -25,14 +25,33 @@
 // Variables for UART receive interrupt
 #define MAX 11
 char buffer[MAX] = {0};
+char initial_time[MAX] = {0};
 volatile char data = 0;
 volatile char flag_ub = 0;
 
+bool initial_time_set = false;
+
+// reset button
+volatile unsigned char flag;
+
 // receive complete interrupt service routine (UART receive interrupt)
 ISR(USART0_RX_vect){
+	// some existing stuff
 	static int i=0;
 	buffer[i++]=UDR0;
 	
+	// initial time (for push button etc.)
+	if (i==MAX-1)
+	{
+		initial_time_set = true;
+	}
+	
+	if (!initial_time_set)
+	{
+		initial_time[i-1]=buffer[i-1];
+	}
+	
+	// some existing stuff
 	if(i==MAX-1){
 		flag_ub=1;
 		i=0; 
@@ -42,6 +61,20 @@ ISR(USART0_RX_vect){
 
 void enableReceive_Itr(){
 	UCSR0B|=(1<<RXCIE0); // enable receive complete interrupt
+}
+
+// for reset button
+ISR(INT4_vect){
+	flag = 1;
+	
+	buffer[0] = initial_time[0];
+	buffer[1] = initial_time[1];
+	
+	buffer[3] = initial_time[3];
+	buffer[4] = initial_time[4];
+	
+	buffer[6] = initial_time[6];
+	buffer[7] = initial_time[7];
 }
 
 int main(void)
@@ -68,6 +101,21 @@ int main(void)
    enableReceive_Itr(); // init interrupt RX interrupt (receive interrupt)
    sei(); // enable global interrupt (prevents putchUSART0(getchUSART0()); from working)
    
+   
+   // FOR BLINKING LED
+   // configure pin 7 of PORTB as output (digital pin 13 on the Arduino Mega2560) (alternatively: DDRB = 0b10000000;)
+   DDRB |= (1<<PB7); //DDRB = 0x80; DDRB = 0b10000000;
+   
+   // PUSH BUTTON
+   // Set PINE4 as input
+   DDRE&=~(1<<PE4); //DDRE = 0b00000000;
+   // Set PINE4 (D2) high
+   PINE |= (1<<PE4);  // PINE = 0b00010000;
+   // interupts
+   EICRB|=(1<<ISC41); // sætter bits i control register med interrupt sense control (bit 1)
+   EICRB&=~(1<<ISC40); // sætter bits i control register med interrupt sense control (bit 2)
+   EIMSK|=(1<<INT4); // set interrupt bit mask for int4 (for push button)
+   
    //char var[4];
    //int i = 0;
 	
@@ -81,10 +129,12 @@ int main(void)
    char str_h[2];
    int hour = 0;
 
+   // interrupt flag (for reset button)
+   flag = 0;
    
   while (1)
   {  
-	 
+	   
 	 //sprintf(var,"%c",getchUSART0());
 	 //sendStrXY(var,0,0);
 	 
