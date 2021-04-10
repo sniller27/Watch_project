@@ -60,7 +60,7 @@ ISR(INT4_vect){
 	
 	_delay_ms(30);
 	
-	// empties buffer
+	// empties buffer (empties array)
 	memset(buffer, 0, sizeof MAX);
 	
 	// send user-input-message
@@ -73,10 +73,10 @@ ISR(INT4_vect){
 void init_timer1(){
 	TCCR1B |=(1<<WGM12); // timer mode: CTC
 	TCCR1B |=(1<<CS11)|((1<<CS10)); // timer pre-scaling: 64
-	OCR1A = 249; // udregnet
+	OCR1A = 249; // udregnet (sætter værdi i sammenligningsregister)
 	TIMSK1 |=(1<<OCIE1A); // interrupt mode: Output Compare A Match Interrupt Enable
 }
-
+// compare match interrupt service routine til timer
 ISR(TIMER1_COMPA_vect)
 {
 	timer1_counter++;
@@ -89,28 +89,16 @@ ISR(TIMER1_COMPA_vect)
 
 int main(void)
 {  
-	
+
   _delay_ms(3000); // to prevent "trash-text" when connecting
-  
-//   I2C_Init();  //initialize i2c interface to display
-//   InitializeDisplay(); //initialize  display
-//   
-//    print_fonts();  //for test and then exclude the  clear_display(); call
-//    //char text[]="en tekst string"; //string declared before use it in sendStrXY - 15 chars long incl spaces
-//    clear_display();   //use this before writing you own text
-   
+     
    uart0_init(MYUBRRF); // UART0 init
    init_timer1(); // init timer1 (alternativ måde at lave delays)
    
-   //char message[] = "Please, enter time in the following format : \0";
-   //char message[] = "Write current time in hh:mm:ss \0 \n";
-   //putsUSART0(message);
-   //char message[] = "Please, enter time in the following format : \0";
-   putsUSART0(message);
+   putsUSART0(message); // terminal startup message
    
    enableReceive_Itr(); // init interrupt RX interrupt (receive interrupt)
    sei(); // enable global interrupt (prevents putchUSART0(getchUSART0()); from working)
-   
    
    // FOR BLINKING LED
    // configure pin 7 of PORTB as output (digital pin 13 on the Arduino Mega2560) (alternatively: DDRB = 0b10000000;)
@@ -125,9 +113,6 @@ int main(void)
    EICRB|=(1<<ISC41); // sætter bits i control register med interrupt sense control (bit 1)
    EICRB&=~(1<<ISC40); // sætter bits i control register med interrupt sense control (bit 2)
    EIMSK|=(1<<INT4); // set interrupt bit mask for int4 (for push button)
-   
-   //char var[4];
-   //int i = 0;
 	
    // timer variables
    char str_ss[2];
@@ -144,14 +129,10 @@ int main(void)
    
   while (1)
   {  
-	   
-	 //sprintf(var,"%c",getchUSART0());
-	 //sendStrXY(var,0,0);
 	 
 	 // OLD
 	 //putchUSART0(getchUSART0());
 	 //_delay_ms(1000);
-	 
 	 
 	 // NEW
 	 //i = getsUSART0(buffer, 8);
@@ -235,20 +216,9 @@ int main(void)
 		
 		putsUSART0(buffer);
 		
-		
-		
-		//var = getchUSART0();
-		
-		//sendCharXY(var,1,2);  //one char  - X is line number - from 0 -7 and Y number position of the char an the line - 15 chars
-		
-		//sendStrXY(text,0,0); //line 0  -print the line of text
-		
 		timer1_flag = 0;
  	 }
-	  
-		 
-	 
+  
   }
   
-
 }
