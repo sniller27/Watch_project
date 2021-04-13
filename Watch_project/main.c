@@ -39,14 +39,13 @@ volatile unsigned char flag;
 
 // receive complete interrupt service routine (UART receive interrupt)
 ISR(USART0_RX_vect){
-	// some existing stuff
+
 	static int i=0;
 	buffer[i++]=UDR0;
-	
-	// some existing stuff
+
 	if(i==MAX-1){
 		flag_ub=1;
-		i=0; 
+		i=0;
 	}
 	
 }
@@ -100,10 +99,6 @@ int main(void)
    enableReceive_Itr(); // init interrupt RX interrupt (receive interrupt)
    sei(); // enable global interrupt (prevents putchUSART0(getchUSART0()); from working)
    
-   // FOR BLINKING LED
-   // configure pin 7 of PORTB as output (digital pin 13 on the Arduino Mega2560) (alternatively: DDRB = 0b10000000;)
-   DDRB |= (1<<PB7); //DDRB = 0x80; DDRB = 0b10000000;
-   
    // PUSH BUTTON
    // Set PINE4 as input
    DDRE&=~(1<<PE4); //DDRE = 0b00000000;
@@ -129,18 +124,6 @@ int main(void)
    
   while (1)
   {  
-	 
-	 // OLD
-	 //putchUSART0(getchUSART0());
-	 //_delay_ms(1000);
-	 
-	 // NEW
-	 //i = getsUSART0(buffer, 8);
-	 //if(i==8)
-	 //putsUSART0(buffer);
-	 //retransmit buffer
-	 //hh:mm:ss
-		  
 	 // NEW NEW
 	 if (flag_ub==1)
 	 {
